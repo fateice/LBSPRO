@@ -37,14 +37,15 @@ Java_com_example_kimi_lbspro_MainActivity_GridDummy(JNIEnv *env, jobject instanc
     double g = 0;
     g = sqrt(s)/(c-1);
     for (int i = 0; i < k; ++i) {
+        J[i] = 0;
+    }
+    for (int i = 0; i < k; ++i) {
         K[i] = 0;
     }
     for (int i = 0; i < c - 1; ++i) {
         for (int j = 0; j < c - 1; ++j) {
-            int x = (i-idx)*g + mLongitude;
-            int y = (j-idx)*g + mLatitude;
-            J[j*c+i] = x;
-            K[j*c+i] = y;
+            J[j*c+i] = (i-idx)*g + mLongitude;
+            K[j*c+i] = (j-idy)*g + mLatitude;
         }
     }
 
