@@ -131,10 +131,11 @@ public class MainActivity extends AppCompatActivity {
     public native double[] GridDummy(double mLongitude,double mLatitude,int k,double s);
 
 
-    public void Grid(View view)
+    public void Grid(View viewh)
     {
-        ss=GridDummy(mLongitude,mLatitude,100,100);
-        cresult.setText(String.valueOf(ss[0])+","+String.valueOf(ss[1]));
+        ss=GridDummy(mLongitude,mLatitude,258,10000);
+        int RealPos =(new Double(ss[200])).intValue();
+        cresult.setText(String.valueOf(ss[RealPos])+","+String.valueOf(ss[RealPos+100]));
     }
 
     public void simGPS(View view){
@@ -213,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
             state = "";
         }else
         {
-            state = String.format(",当前经度： %f 当前纬度：%f",currentPt.longitude,currentPt.latitude);
+            state = String.format("当前经度： %f 当前纬度：%f",currentPt.longitude,currentPt.latitude);
         }
         state += "\n";
         mStateBar.setText(state);
@@ -376,6 +377,15 @@ public class MainActivity extends AppCompatActivity {
     {
         LatLng latLng=new LatLng(mLatitude,mLongitude);
         MapStatusUpdate msu= MapStatusUpdateFactory.newLatLng(latLng);
+
+        if(mStateBar == null) {
+            return;
+        }
+        String state = "";
+        state = String.format("当前经度： %f 当前纬度：%f",mLongitude,mLatitude);
+        state += "\n";
+        mStateBar.setText(state);
+
         mBaiduMap.setMapStatus(msu);
     }
 
