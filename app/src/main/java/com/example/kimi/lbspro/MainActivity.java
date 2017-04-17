@@ -32,8 +32,10 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 
 
@@ -131,11 +133,26 @@ public class MainActivity extends AppCompatActivity {
     public native double[] GridDummy(double mLongitude,double mLatitude,int k,double s);
 
 
-    public void Grid(View viewh)
+    public void Grid(View view)
     {
-        ss=GridDummy(mLongitude,mLatitude,258,10000);
+        ss=GridDummy(mLongitude,mLatitude,25,0.01);
         int RealPos =(new Double(ss[200])).intValue();
         cresult.setText(String.valueOf(ss[RealPos])+","+String.valueOf(ss[RealPos+100]));
+
+        mBaiduMap.clear();
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_geo);
+        for (int i=0;i<25;i++)
+        {
+            LatLng point = new LatLng(ss[i+100],ss[i]);
+            OverlayOptions option = new MarkerOptions().position(point).icon(bitmap);
+            mBaiduMap.addOverlay(option);
+        }
+
+
+
+
+//        OverlayOptions Dot = new DotOptions().center(point).color(0xAAFFFF00).radius(2);
+//        mBaiduMap.addOverlay(Dot);
     }
 
     public void simGPS(View view){
