@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         //mLocationManager.removeTestProvider(mMockProviderName);
         mmLatitude = mLatitude;
         mmLongitude = mLongitude;
+        mBaiduMap.clear();
     }
 
     private void initView() {
