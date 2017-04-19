@@ -131,7 +131,13 @@ public class MainActivity extends AppCompatActivity {
 
     public native String stringFromJNI();
     public native double[] GridDummy(double mLongitude,double mLatitude,int k,double s);
+    public native double[] NNC(double mLongitude,double mLatitude, int k, double s);
 
+    public void NNCb(View view)
+    {
+        ss = NNC(mLongitude,mLatitude,3,10000);
+        cresult.setText(String.valueOf(ss[0])+","+String.valueOf(ss[1]));
+    }
 
     public void Grid(View view)
     {
