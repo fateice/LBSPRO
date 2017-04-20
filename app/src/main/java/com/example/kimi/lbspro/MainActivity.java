@@ -142,7 +142,22 @@ public class MainActivity extends AppCompatActivity {
     public native double[] NNC(double mLongitude,double mLatitude, int k, double s);
     public native double[] IC(double mLongitude,double mLatitude,int k,double s);
 
-
+    public void ICb(View view)
+    {
+        mBaiduMap.clear();
+        ss = IC(mLongitude,mLatitude,3,10000);
+        LatLng pt1 = new LatLng(ss[1],ss[0]);
+        LatLng pt2 = new LatLng(ss[3],ss[0]);
+        LatLng pt3 = new LatLng(ss[3],ss[2]);
+        LatLng pt4 = new LatLng(ss[1],ss[2]);
+        List<LatLng> pts = new ArrayList<LatLng>();
+        pts.add(pt1);
+        pts.add(pt2);
+        pts.add(pt3);
+        pts.add(pt4);
+        OverlayOptions poly = new PolygonOptions().points(pts).stroke(new Stroke(4,0xAA00FF00)).fillColor(0xAAFFFF00);
+        mBaiduMap.addOverlay(poly);
+    }
     public void NNCb(View view)
     {
         mBaiduMap.clear();

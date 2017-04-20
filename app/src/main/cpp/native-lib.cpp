@@ -13,6 +13,90 @@ Java_com_example_kimi_lbspro_MainActivity_IC(JNIEnv *env, jobject instance, jdou
                                              jdouble mLatitude, jint k, jdouble s) {
 
     // TODO
+    int jmin = mLongitude * 1000000 - s;
+    int jmax = mLongitude * 1000000 + s;
+    int kmin = mLatitude * 1000000 - s;
+    int kmax = mLatitude * 1000000 + s;
+
+    //经度
+    double J[10] = {};
+    //纬度
+    double K[10] = {};
+
+    srand(unsigned(time(0)));
+    for (int i = 0; i < 10; ++i) {
+        J[i] = ((rand() % (jmax - jmin + 1)) + jmin) / (double)1000000;
+        K[i] = ((rand() % (kmax - kmin + 1)) + kmin) / (double)1000000;
+    }
+
+    J[0] = mLongitude;
+    K[0] = mLatitude;
+
+    double minJ = fabs(mLongitude);
+    double minK = fabs(mLatitude);
+    double maxJ = fabs(mLongitude) + 1;
+    double maxK = fabs(mLatitude) + 1;
+
+    //上一次的结果
+    double minJLast = 0;
+    double minKLast = 0;
+    double maxJLast = 0;
+    double maxKLast = 0;
+
+
+    int find = 0;
+    int xsum = 0;
+
+    while(find == 0)
+    {
+        //比较
+        for (int i = 0; i < 10; ++i) {
+            if (J[i]>minJ && K[i]>minK && J[i]<maxJ && K[i]<maxK)
+            {
+                xsum++;
+            }
+        }
+        if(xsum < k)
+        {
+            find = 1;
+        } else{
+            xsum = 0;
+        }
+
+        //保存上一次的结果
+        minJLast = minJ;
+        minKLast = minK;
+        maxJLast = maxJ;
+        maxKLast = maxK;
+
+        //划分
+        if(mLongitude<(minJ+maxJ))
+        {
+            maxJ = (minJ + maxJ)/(double)2;
+        }
+        else
+        {
+            minJ = (minJ + maxJ)/(double)2;
+        }
+
+        if(mLatitude<(minK+maxK))
+        {
+            maxK = (minK + maxK)/(double)2;
+        }
+        else{
+            minK = (minK + maxK)/(double)2;
+        }
+
+    }
+
+    jdoubleArray result = env->NewDoubleArray(4);
+    double carr[4]={};
+    carr[0]=minJLast;
+    carr[1]=minKLast;
+    carr[2]=maxJLast;
+    carr[3]=maxKLast;
+    env->SetDoubleArrayRegion(result,0,4,carr);
+    return result;
 
 }
 
