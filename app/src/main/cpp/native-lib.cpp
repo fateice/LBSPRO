@@ -4,15 +4,24 @@
 #include <math.h>
 #include <ctime>
 #include <algorithm>
-
 using namespace std;
+
+
+extern "C"
+JNIEXPORT jdoubleArray JNICALL
+Java_com_example_kimi_lbspro_MainActivity_IC(JNIEnv *env, jobject instance, jdouble mLongitude,
+                                             jdouble mLatitude, jint k, jdouble s) {
+
+    // TODO
+
+}
+
+
 
 extern "C"
 JNIEXPORT jdoubleArray JNICALL
 Java_com_example_kimi_lbspro_MainActivity_NNC(JNIEnv *env, jobject instance, jdouble mLongitude,
                                               jdouble mLatitude, jint k, jdouble s) {
-
-    // TODO
     int jmin = mLongitude * 1000000 - s;
     int jmax = mLongitude * 1000000 + s;
     int kmin = mLatitude * 1000000 - s;
@@ -124,7 +133,6 @@ Java_com_example_kimi_lbspro_MainActivity_NNC(JNIEnv *env, jobject instance, jdo
     env->SetDoubleArrayRegion(result,0,4,carr);
     return result;
 
-
 }
 
 extern "C"
@@ -141,7 +149,6 @@ JNIEXPORT jdoubleArray JNICALL
 Java_com_example_kimi_lbspro_MainActivity_GridDummy(JNIEnv *env, jobject instance,
                                                     jdouble mLongitude, jdouble mLatitude, jint k,
                                                     jdouble s) {
-    // TODO
     int c = 0;
 
     //经度

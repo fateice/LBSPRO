@@ -3,6 +3,9 @@ package com.example.kimi.lbspro;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
@@ -137,15 +140,18 @@ public class MainActivity extends AppCompatActivity {
     public native String stringFromJNI();
     public native double[] GridDummy(double mLongitude,double mLatitude,int k,double s);
     public native double[] NNC(double mLongitude,double mLatitude, int k, double s);
+    public native double[] IC(double mLongitude,double mLatitude,int k,double s);
+
 
     public void NNCb(View view)
     {
+        mBaiduMap.clear();
         ss = NNC(mLongitude,mLatitude,3,10000);
         //cresult.setText(String.valueOf(ss[0])+","+String.valueOf(ss[1]));
         LatLng pt1 = new LatLng(ss[1],ss[0]);
         LatLng pt2 = new LatLng(ss[3],ss[0]);
-        LatLng pt3 = new LatLng(ss[1],ss[2]);
-        LatLng pt4 = new LatLng(ss[3],ss[2]);
+        LatLng pt3 = new LatLng(ss[3],ss[2]);
+        LatLng pt4 = new LatLng(ss[1],ss[2]);
         List<LatLng> pts = new ArrayList<LatLng>();
         pts.add(pt1);
         pts.add(pt2);
@@ -285,9 +291,20 @@ public class MainActivity extends AppCompatActivity {
         //设置 LocationClientOption
         mlocationClient.setLocOption(mOption);
 
-        //初始化图标,BitmapDescriptorFactory是bitmap 描述信息工厂类.
-        mIconLocation= BitmapDescriptorFactory
-                .fromResource(R.drawable.location_marker);
+//        //初始化图标,BitmapDescriptorFactory是bitmap 描述信息工厂类.
+//        mIconLocation= BitmapDescriptorFactory
+//                .fromResource(R.drawable.gez_location_marker2);
+
+        Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.gez_location_marker2);
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float radio = (float)0.4;
+        Matrix matrix = new Matrix();
+        matrix.postScale(radio, radio);
+        // 得到新的图片
+        Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
+        mIconLocation = BitmapDescriptorFactory.fromBitmap(newbm);
+
 
 
         myOrientationListener=new MyOrientationListener(context);
