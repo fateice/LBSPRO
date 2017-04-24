@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         pts.add(pt2);
         pts.add(pt3);
         pts.add(pt4);
-        OverlayOptions poly = new PolygonOptions().points(pts).stroke(new Stroke(4,0xAA00FF00)).fillColor(0xAAFFFF00);
+        OverlayOptions poly = new PolygonOptions().points(pts).stroke(new Stroke(4,0xAA0066CC)).fillColor(0xAAFFCCFF);
         mBaiduMap.addOverlay(poly);
 
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         pts.add(pt2);
         pts.add(pt3);
         pts.add(pt4);
-        OverlayOptions poly = new PolygonOptions().points(pts).stroke(new Stroke(4,0xAA00FF00)).fillColor(0xAAFFFF00);
+        OverlayOptions poly = new PolygonOptions().points(pts).stroke(new Stroke(4,0xAA0066CC)).fillColor(0xAAFFCCFF);
         mBaiduMap.addOverlay(poly);
 
 
