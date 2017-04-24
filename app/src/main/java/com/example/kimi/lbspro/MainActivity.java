@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
 
     //计算后的经纬度
     private double ss[];
+    private int k;
+    private int s;
 
     private Button mButton;
 
@@ -110,6 +113,12 @@ public class MainActivity extends AppCompatActivity {
         mStateBar = (TextView)findViewById(R.id.mStateBar);
         mButton = (Button) findViewById(R.id.button);
 
+        EditText editTextk = (EditText)findViewById(R.id.editk);
+        EditText editTexts = (EditText)findViewById(R.id.edits);
+
+        k = Integer.parseInt(editTextk.getText().toString());
+        s = Integer.parseInt(editTexts.getText().toString());
+
 
 
         mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
@@ -144,8 +153,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void ICb(View view)
     {
+
         mBaiduMap.clear();
         ss = IC(mLongitude,mLatitude,3,10000);
+        //ss = IC(mLongitude,mLatitude,k,s);
         LatLng pt1 = new LatLng(ss[1],ss[0]);
         LatLng pt2 = new LatLng(ss[3],ss[0]);
         LatLng pt3 = new LatLng(ss[3],ss[2]);
@@ -157,6 +168,16 @@ public class MainActivity extends AppCompatActivity {
         pts.add(pt4);
         OverlayOptions poly = new PolygonOptions().points(pts).stroke(new Stroke(4,0xAA00FF00)).fillColor(0xAAFFFF00);
         mBaiduMap.addOverlay(poly);
+
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
+        for(int i=0;i<10;i++)
+        {
+            LatLng point = new LatLng(ss[i+14],ss[i+4]);
+            OverlayOptions option = new MarkerOptions().position(point).icon(bitmap);
+            mBaiduMap.addOverlay(option);
+        }
+
+
     }
     public void NNCb(View view)
     {
@@ -174,6 +195,16 @@ public class MainActivity extends AppCompatActivity {
         pts.add(pt4);
         OverlayOptions poly = new PolygonOptions().points(pts).stroke(new Stroke(4,0xAA00FF00)).fillColor(0xAAFFFF00);
         mBaiduMap.addOverlay(poly);
+
+
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
+        for(int i=0;i<10;i++)
+        {
+            LatLng point = new LatLng(ss[i+14],ss[i+4]);
+            OverlayOptions option = new MarkerOptions().position(point).icon(bitmap);
+            mBaiduMap.addOverlay(option);
+        }
+
     }
 
     public void Grid(View view)
@@ -183,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
         cresult.setText(String.valueOf(ss[RealPos])+","+String.valueOf(ss[RealPos+100]));
 
         mBaiduMap.clear();
-        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.icon_geo);
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
         for (int i=0;i<25;i++)
         {
             LatLng point = new LatLng(ss[i+100],ss[i]);

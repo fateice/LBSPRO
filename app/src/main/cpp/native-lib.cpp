@@ -32,10 +32,10 @@ Java_com_example_kimi_lbspro_MainActivity_IC(JNIEnv *env, jobject instance, jdou
     J[0] = mLongitude;
     K[0] = mLatitude;
 
-    double minJ = fabs(mLongitude);
-    double minK = fabs(mLatitude);
-    double maxJ = fabs(mLongitude) + 1;
-    double maxK = fabs(mLatitude) + 1;
+    double minJ = 126.63;
+    double minK = 45.74;
+    double maxJ = 126.65;
+    double maxK = 45.76;
 
     //上一次的结果
     double minJLast = 0;
@@ -49,6 +49,7 @@ Java_com_example_kimi_lbspro_MainActivity_IC(JNIEnv *env, jobject instance, jdou
 
     while(find == 0)
     {
+        xsum = 0;
         //比较
         for (int i = 0; i < 10; ++i) {
             if (J[i]>minJ && K[i]>minK && J[i]<maxJ && K[i]<maxK)
@@ -58,10 +59,9 @@ Java_com_example_kimi_lbspro_MainActivity_IC(JNIEnv *env, jobject instance, jdou
         }
         if(xsum < k)
         {
-            find = 1;
-        } else{
-            xsum = 0;
+            break;
         }
+
 
         //保存上一次的结果
         minJLast = minJ;
@@ -70,7 +70,7 @@ Java_com_example_kimi_lbspro_MainActivity_IC(JNIEnv *env, jobject instance, jdou
         maxKLast = maxK;
 
         //划分
-        if(mLongitude<(minJ+maxJ))
+        if(mLongitude<(minJ+maxJ)/(double)2)
         {
             maxJ = (minJ + maxJ)/(double)2;
         }
@@ -79,7 +79,7 @@ Java_com_example_kimi_lbspro_MainActivity_IC(JNIEnv *env, jobject instance, jdou
             minJ = (minJ + maxJ)/(double)2;
         }
 
-        if(mLatitude<(minK+maxK))
+        if(mLatitude<(minK+maxK)/(double)2)
         {
             maxK = (minK + maxK)/(double)2;
         }
@@ -89,13 +89,15 @@ Java_com_example_kimi_lbspro_MainActivity_IC(JNIEnv *env, jobject instance, jdou
 
     }
 
-    jdoubleArray result = env->NewDoubleArray(4);
+    jdoubleArray result = env->NewDoubleArray(24);
     double carr[4]={};
     carr[0]=minJLast;
     carr[1]=minKLast;
     carr[2]=maxJLast;
     carr[3]=maxKLast;
     env->SetDoubleArrayRegion(result,0,4,carr);
+    env->SetDoubleArrayRegion(result,4,10,J);
+    env->SetDoubleArrayRegion(result,14,10,K);
     return result;
 
 }
@@ -208,13 +210,15 @@ Java_com_example_kimi_lbspro_MainActivity_NNC(JNIEnv *env, jobject instance, jdo
         }
     }
 
-    jdoubleArray result = env->NewDoubleArray(4);
+    jdoubleArray result = env->NewDoubleArray(24);
     double carr[4]={};
     carr[0]=minJ;
     carr[1]=minK;
     carr[2]=maxJ;
     carr[3]=maxK;
     env->SetDoubleArrayRegion(result,0,4,carr);
+    env->SetDoubleArrayRegion(result,4,10,J);
+    env->SetDoubleArrayRegion(result,14,10,K);
     return result;
 
 }
