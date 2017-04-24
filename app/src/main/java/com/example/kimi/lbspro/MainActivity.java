@@ -341,7 +341,7 @@ public class MainActivity extends AppCompatActivity {
 //        mIconLocation= BitmapDescriptorFactory
 //                .fromResource(R.drawable.gez_location_marker2);
 
-        Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.gez_location_marker2);
+        Bitmap bm = BitmapFactory.decodeResource(getResources(),R.drawable.gez_location_marker);
         int width = bm.getWidth();
         int height = bm.getHeight();
         float radio = (float)0.4;
