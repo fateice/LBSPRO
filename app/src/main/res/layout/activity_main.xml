@@ -51,14 +51,6 @@
         android:text="模拟"
         android:onClick="simGPS"/>
 
-    <TextView
-        android:id="@+id/cresult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignTop="@+id/button2"
-        android:text="TextView" />
-
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
@@ -107,5 +99,14 @@
         android:ems="10"
         android:text="10000"
         android:layout_alignStart="@+id/editk" />
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/edits"
+        android:layout_below="@+id/edits"
+        android:text="确认"
+        android:onClick="inputks"/>
 
 </RelativeLayout>

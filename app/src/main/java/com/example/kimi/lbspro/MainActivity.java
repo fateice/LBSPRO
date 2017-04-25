@@ -71,14 +71,19 @@ public class MainActivity extends AppCompatActivity {
 
     //计算后的经纬度
     private double ss[];
-    private int k;
-    private int s;
+    private int k = 3;
+    private int s = 10000;
 
     private Button mButton;
 
+//    private EditText editTextk = (EditText)findViewById(R.id.editk);
+//    private EditText editTexts = (EditText)findViewById(R.id.edits);
+
+    private EditText editTextk;
+    private EditText editTexts;
+
     private  TextView mStateBar;
 
-    private TextView cresult;
 
     boolean siming = false;
 
@@ -113,14 +118,6 @@ public class MainActivity extends AppCompatActivity {
         mStateBar = (TextView)findViewById(R.id.mStateBar);
         mButton = (Button) findViewById(R.id.button);
 
-        EditText editTextk = (EditText)findViewById(R.id.editk);
-        EditText editTexts = (EditText)findViewById(R.id.edits);
-
-        k = Integer.parseInt(editTextk.getText().toString());
-        s = Integer.parseInt(editTexts.getText().toString());
-
-
-
         mLocationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         enableTestProvider();
         //setLocation();
@@ -141,22 +138,27 @@ public class MainActivity extends AppCompatActivity {
         initListener();
         initLocation();
 
-        //C 返回测试
-        cresult = (TextView)findViewById(R.id.cresult);
 
     }
 
-    public native String stringFromJNI();
     public native double[] GridDummy(double mLongitude,double mLatitude,int k,double s);
     public native double[] NNC(double mLongitude,double mLatitude, int k, double s);
     public native double[] IC(double mLongitude,double mLatitude,int k,double s);
+
+    public void inputks(View view)
+    {
+        editTextk = (EditText)findViewById(R.id.editk);
+        editTexts = (EditText)findViewById(R.id.edits);
+        k = Integer.parseInt(editTextk.getText().toString());
+        s = Integer.parseInt(editTexts.getText().toString());
+    }
 
     public void ICb(View view)
     {
 
         mBaiduMap.clear();
-        ss = IC(mLongitude,mLatitude,3,10000);
-        //ss = IC(mLongitude,mLatitude,k,s);
+        //ss = IC(mLongitude,mLatitude,3,10000);
+        ss = IC(mLongitude,mLatitude,k,s);
         LatLng pt1 = new LatLng(ss[1],ss[0]);
         LatLng pt2 = new LatLng(ss[3],ss[0]);
         LatLng pt3 = new LatLng(ss[3],ss[2]);
@@ -182,8 +184,7 @@ public class MainActivity extends AppCompatActivity {
     public void NNCb(View view)
     {
         mBaiduMap.clear();
-        ss = NNC(mLongitude,mLatitude,3,10000);
-        //cresult.setText(String.valueOf(ss[0])+","+String.valueOf(ss[1]));
+        ss = NNC(mLongitude,mLatitude,k,s);
         LatLng pt1 = new LatLng(ss[1],ss[0]);
         LatLng pt2 = new LatLng(ss[3],ss[0]);
         LatLng pt3 = new LatLng(ss[3],ss[2]);
@@ -211,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
     {
         ss=GridDummy(mLongitude,mLatitude,25,0.01);
         int RealPos =(new Double(ss[200])).intValue();
-        cresult.setText(String.valueOf(ss[RealPos])+","+String.valueOf(ss[RealPos+100]));
 
         mBaiduMap.clear();
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
@@ -237,8 +237,9 @@ public class MainActivity extends AppCompatActivity {
     public void simClose(View view){
         //mLocationManager.clearTestProviderEnabled(mMockProviderName);
         //mLocationManager.removeTestProvider(mMockProviderName);
-        mmLatitude = mLatitude;
-        mmLongitude = mLongitude;
+        //initView();
+        //initListener();
+        //initLocation();
         mBaiduMap.clear();
     }
 
