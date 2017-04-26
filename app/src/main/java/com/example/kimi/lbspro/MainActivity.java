@@ -3,6 +3,7 @@ package com.example.kimi.lbspro;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -530,6 +531,9 @@ public class MainActivity extends AppCompatActivity {
                 //罗盘模式
                 locationMode= MyLocationConfiguration.LocationMode.COMPASS;
                 break;
+            case R.id.id_information:
+                Intent intent = new Intent(MainActivity.this,InformationActivity.class);
+                startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

@@ -30,5 +30,9 @@
         android:id="@+id/id_map_model_compass"
         android:title="罗盘模式"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/id_information"
+        android:title="使用说明"
+        app:showAsAction="never" />
 
 </menu>
