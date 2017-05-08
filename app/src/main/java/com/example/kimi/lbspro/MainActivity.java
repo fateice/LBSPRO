@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
     public native double[] GridDummy(double mLongitude,double mLatitude,int k,double s);
     public native double[] NNC(double mLongitude,double mLatitude, int k, double s);
     public native double[] IC(double mLongitude,double mLatitude,int k,double s);
+    public native double[] Casper(double mLongitude,double mLatitude,int k,double s);
 
     public void inputks(View view)
     {
@@ -152,6 +153,31 @@ public class MainActivity extends AppCompatActivity {
         editTexts = (EditText)findViewById(R.id.edits);
         k = Integer.parseInt(editTextk.getText().toString());
         s = Integer.parseInt(editTexts.getText().toString());
+    }
+
+    public void CCasper(View view)
+    {
+        mBaiduMap.clear();
+        ss = Casper(mLongitude,mLatitude,k,s);
+        LatLng pt1 = new LatLng(ss[1],ss[0]);
+        LatLng pt2 = new LatLng(ss[3],ss[0]);
+        LatLng pt3 = new LatLng(ss[3],ss[2]);
+        LatLng pt4 = new LatLng(ss[1],ss[2]);
+        List<LatLng> pts = new ArrayList<LatLng>();
+        pts.add(pt1);
+        pts.add(pt2);
+        pts.add(pt3);
+        pts.add(pt4);
+        OverlayOptions poly = new PolygonOptions().points(pts).stroke(new Stroke(4,0xAA0066CC)).fillColor(0xAAFFCCFF);
+        mBaiduMap.addOverlay(poly);
+
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
+        for(int i=0;i<10;i++)
+        {
+            LatLng point = new LatLng(ss[i+14],ss[i+4]);
+            OverlayOptions option = new MarkerOptions().position(point).icon(bitmap);
+            mBaiduMap.addOverlay(option);
+        }
     }
 
     public void ICb(View view)
@@ -179,9 +205,8 @@ public class MainActivity extends AppCompatActivity {
             OverlayOptions option = new MarkerOptions().position(point).icon(bitmap);
             mBaiduMap.addOverlay(option);
         }
-
-
     }
+
     public void NNCb(View view)
     {
         mBaiduMap.clear();

@@ -4,15 +4,233 @@
 #include <math.h>
 #include <ctime>
 #include <algorithm>
+
+
+
 using namespace std;
 
+extern "C"
+JNIEXPORT jdoubleArray JNICALL
+Java_com_example_kimi_lbspro_MainActivity_Casper(JNIEnv *env, jobject instance, jdouble mLongitude,
+                                                 jdouble mLatitude, jint k, jdouble s) {
+
+    int jmin = mLongitude * 1000000 - s;
+    int jmax = mLongitude * 1000000 + s;
+    int kmin = mLatitude * 1000000 - s;
+    int kmax = mLatitude * 1000000 + s;
+
+    //经度
+    double J[10] = {};
+    //纬度
+    double K[10] = {};
+
+    srand(unsigned(time(0)));
+    for (int i = 0; i < 10; ++i) {
+        J[i] = ((rand() % (jmax - jmin + 1)) + jmin) / (double)1000000;
+        K[i] = ((rand() % (kmax - kmin + 1)) + kmin) / (double)1000000;
+    }
+
+    J[0] = mLongitude;
+    K[0] = mLatitude;
+
+    double minJ = 126.63;
+    double minK = 45.74;
+    double maxJ = 126.65;
+    double maxK = 45.76;
+
+    //上一次的结果
+    double minJLast = 0;
+    double minKLast = 0;
+    double maxJLast = 0;
+    double maxKLast = 0;
+
+
+    int find = 0;
+    int xsum = 0;
+
+    while(find == 0)
+    {
+        xsum = 0;
+        //比较
+        for (int i = 0; i < 10; ++i) {
+            if (J[i]>minJ && K[i]>minK && J[i]<maxJ && K[i]<maxK)
+            {
+                xsum++;
+            }
+        }
+        if(xsum==k || xsum==0)
+        {
+            break;
+        }
+        if(xsum < k)
+        {
+            //break;
+            //左下
+            if(minJ == minJLast && minK == minKLast) {
+
+                //J
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if (J[i] > minJ && K[i] > minK && J[i] < maxJLast && K[i] < maxK) {
+                        xsum++;
+                    }
+                }
+                if (xsum > k || xsum == k) {
+                    maxKLast = maxK;
+                    break;
+                }
+
+                //K
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if (J[i] > minJ && K[i] > minK && J[i] < maxJ && K[i] < maxKLast) {
+                        xsum++;
+                    }
+                }
+                if (xsum > k || xsum == k) {
+                    maxJLast = maxJ;
+                    break;
+                }
+
+            }
+            //右下
+            else if(maxJ == maxJLast && minK == minKLast)
+            {
+                //J
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if (J[i] > minJLast && K[i] > minK && J[i] < maxJLast && K[i] < maxK) {
+                        xsum++;
+                    }
+                }
+                if (xsum > k || xsum == k) {
+                    maxKLast = maxK;
+                    break;
+                }
+
+                //K
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if (J[i] > minJ && K[i] > minK && J[i] < maxJ && K[i] < maxKLast) {
+                        xsum++;
+                    }
+                }
+                if (xsum > k || xsum == k) {
+                    minJLast = minJ;
+                    break;
+                }
+
+
+
+            }
+            //右上
+            else if(maxJ == maxJLast && maxK == maxKLast)
+            {
+                //J
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if(J[i]>minJLast && K[i]>maxK && J[i]<maxJ && K[i]<maxK)
+                    {
+                        xsum++;
+                    }
+                }
+                if(xsum > k || xsum == k) {
+                    minKLast = minK;
+                    break;
+                }
+
+
+                //K
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if(J[i]>minJ && K[i]>minKLast && J[i]<maxJ && K[i]<maxK)
+                    {
+                        xsum++;
+                    }
+                }
+                if(xsum > k || xsum == k){
+                    minJLast = minJ;
+                    break;
+                }
+            }
+
+            //左上
+            else if(minJ == minJLast && maxK == maxKLast)
+            {
+                //J
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if(J[i]>minJ && K[i]>minK && J[i]<maxJLast && K[i]<maxK)
+                    {
+                        xsum++;
+                    }
+                }
+                if(xsum>k||xsum==k)
+                {
+                    minKLast = minK;
+                    break;
+                }
+                //K
+                xsum=0;
+                for (int i = 0; i < 10; ++i) {
+                    if(J[i]>minJ && K[i]>maxKLast && J[i]<maxJ && K[i]<maxK)
+                    {
+                        xsum++;
+                    }
+                }
+                if(xsum>k||xsum==k){
+                    maxJLast = maxJ;
+                    break;
+                }
+
+            } else{
+                break;
+            }
+        }
+
+        //保存上一次的结果
+        minJLast = minJ;
+        minKLast = minK;
+        maxJLast = maxJ;
+        maxKLast = maxK;
+
+        //划分
+        if(mLongitude<(minJ+maxJ)/(double)2)
+        {
+            maxJ = (minJ + maxJ)/(double)2;
+        }
+        else
+        {
+            minJ = (minJ + maxJ)/(double)2;
+        }
+
+        if(mLatitude<(minK+maxK)/(double)2)
+        {
+            maxK = (minK + maxK)/(double)2;
+        }
+        else{
+            minK = (minK + maxK)/(double)2;
+        }
+
+    }
+
+    jdoubleArray result = env->NewDoubleArray(24);
+    double carr[4]={};
+    carr[0]=minJLast;
+    carr[1]=minKLast;
+    carr[2]=maxJLast;
+    carr[3]=maxKLast;
+    env->SetDoubleArrayRegion(result,0,4,carr);
+    env->SetDoubleArrayRegion(result,4,10,J);
+    env->SetDoubleArrayRegion(result,14,10,K);
+    return result;
+
+}
 
 extern "C"
 JNIEXPORT jdoubleArray JNICALL
 Java_com_example_kimi_lbspro_MainActivity_IC(JNIEnv *env, jobject instance, jdouble mLongitude,
                                              jdouble mLatitude, jint k, jdouble s) {
-
-    // TODO
     int jmin = mLongitude * 1000000 - s;
     int jmax = mLongitude * 1000000 + s;
     int kmin = mLatitude * 1000000 - s;
