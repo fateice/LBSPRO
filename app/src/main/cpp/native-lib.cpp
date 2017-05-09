@@ -4,10 +4,78 @@
 #include <math.h>
 #include <ctime>
 #include <algorithm>
-
+#include <vector>
 
 
 using namespace std;
+
+const int NUM = 1; //定义划分簇的数目
+
+//数据向量表示
+struct Vect
+{
+    double x;
+    double y;
+};
+
+double getDist(Vect A, Vect B)  //计算距离的平方
+{
+    return (A.x - B.x) * (A.x - B.x) + (A.y - B.y) * (A.y - B.y);
+}
+
+//计算每个簇的中心，平均距离表示
+Vect getMeansC(vector<Vect> t)
+{
+    int num = t.size();
+    double meansX = 0;
+    double meansY = 0;
+    for (int i = 0; i<num; i++)
+    {
+        meansX += t[i].x;
+        meansY += t[i].y;
+    }
+    Vect c;
+    c.x = meansX / num;
+    c.y = meansY / num;
+    return c;
+}
+
+//获取算法的准则函数值，当准则函数收敛时算法停止
+double getE(vector<Vect> classes[], Vect means[])
+{
+    double sum = 0;
+    for (int i = 0; i<NUM; i++)
+    {
+        vector<Vect> v = classes[i];
+        for (int j = 0; j<v.size(); j++)
+            sum += getDist(v[j], means[i]);
+    }
+    return sum;
+}
+
+int searchMinC(Vect t, Vect means[NUM])
+{
+    int c = 0;
+    double d = getDist(t, means[0]);
+    for (int i = 1; i<NUM; i++)
+    {
+        double tmp = getDist(t, means[i]);
+        if (tmp < d)
+        {
+            c = i;
+            d = tmp;
+        }
+    }
+    return c;
+}
+
+void kMeans(vector<Vect> init)
+{
+
+
+}
+
+
 
 extern "C"
 JNIEXPORT jdoubleArray JNICALL
@@ -428,7 +496,71 @@ Java_com_example_kimi_lbspro_MainActivity_NNC(JNIEnv *env, jobject instance, jdo
         }
     }
 
-    jdoubleArray result = env->NewDoubleArray(24);
+    //伪装区域内的点
+    int inarenum = 0;
+    double inJ[15];
+    double inK[15];
+
+    int start = 0;
+    for (int i = 0; i < 10; i++)
+    {
+        if ((J[i] > minJ || J[i] == minJ) && (J[i] < maxJ || J[i] == maxJ) && (K[i] > minK || K[i] == minK) && (K[i] < maxK || K[i] == maxK))
+        {
+            inarenum++;
+            inJ[start] = J[i];
+            inK[start] = K[i];
+            start++;
+        }
+    }
+
+    vector<Vect>init;
+    for (int i = 0; i < inarenum; i++)
+    {
+        Vect t;
+        t.x = inJ[i];
+        t.y = inK[i];
+        init.push_back(t);
+    }
+
+    //KEMANS
+    Vect means[NUM];
+    vector<Vect> classes[NUM];
+    double newE, oldE = -1;
+    srand(time(NULL));
+    for (int i = 0; i<NUM; i++)
+    {
+        int c = rand() % init.size();
+        classes[i].push_back(init[c]);
+        means[i] = getMeansC(classes[i]);  //计算当前每个簇的中心点
+    }
+    newE = getE(classes, means);  //计算当前准则函数值
+    for (int i = 0; i<NUM; i++)
+        classes[i].clear();
+    vector<Vect> ans[NUM];
+    while (fabs(newE - oldE) >= 1)
+    {
+        for (int i = 0; i<init.size(); i++)
+        {
+            int toC = searchMinC(init[i], means);
+            classes[toC].push_back(init[i]);
+        }
+        for (int i = 0; i<NUM; i++)
+            ans[i] = classes[i];
+        for (int i = 0; i<NUM; i++)
+            means[i] = getMeansC(classes[i]);
+        oldE = newE;
+        newE = getE(classes, means);
+        for (int i = 0; i<NUM; i++)
+            classes[i].clear();
+    }
+
+    double kmean[2]={};
+    kmean[0] = means[0].x;
+    kmean[1] = means[0].y;
+    //KEANS END
+
+    //24，25是k-mean坐标
+    jdoubleArray result = env->NewDoubleArray(26);
     double carr[4]={};
     carr[0]=minJ;
     carr[1]=minK;
@@ -437,6 +569,8 @@ Java_com_example_kimi_lbspro_MainActivity_NNC(JNIEnv *env, jobject instance, jdo
     env->SetDoubleArrayRegion(result,0,4,carr);
     env->SetDoubleArrayRegion(result,4,10,J);
     env->SetDoubleArrayRegion(result,14,10,K);
+    env->SetDoubleArrayRegion(result,24,2,kmean);
+
     return result;
 
 }

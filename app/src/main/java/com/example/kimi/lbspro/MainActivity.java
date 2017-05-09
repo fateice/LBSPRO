@@ -142,10 +142,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public native double[] GridDummy(double mLongitude,double mLatitude,int k,double s);
-    public native double[] NNC(double mLongitude,double mLatitude, int k, double s);
-    public native double[] IC(double mLongitude,double mLatitude,int k,double s);
-    public native double[] Casper(double mLongitude,double mLatitude,int k,double s);
+    public native double[] GridDummy(double mLongitude,double mLatitude,int k,double s);//栅格
+    public native double[] NNC(double mLongitude,double mLatitude, int k, double s);//最近邻
+    public native double[] IC(double mLongitude,double mLatitude,int k,double s);//四叉树
+    public native double[] Casper(double mLongitude,double mLatitude,int k,double s);//四叉树改进
 
     public void inputks(View view)
     {
@@ -223,6 +223,10 @@ public class MainActivity extends AppCompatActivity {
         OverlayOptions poly = new PolygonOptions().points(pts).stroke(new Stroke(4,0xAA0066CC)).fillColor(0xAAFFCCFF);
         mBaiduMap.addOverlay(poly);
 
+        BitmapDescriptor bitmapk = BitmapDescriptorFactory.fromResource(R.drawable.location_kmean);
+        LatLng pointkmean = new LatLng(ss[25],ss[24]);
+        OverlayOptions optionkmean = new MarkerOptions().position(pointkmean).icon(bitmapk);
+        mBaiduMap.addOverlay(optionkmean);
 
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
         for(int i=0;i<10;i++)
