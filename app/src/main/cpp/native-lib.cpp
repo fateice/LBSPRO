@@ -76,6 +76,19 @@ void kMeans(vector<Vect> init)
 }
 
 
+JNIEXPORT jdoubleArray JNICALL
+Java_com_example_kimi_lbspro_MainActivity_NNCTEST(JNIEnv *env, jobject instance, jdouble mLongitude,
+                                                  jdouble mLatitude, jint k, jdouble s,
+                                                  jdoubleArray fLatitude_, jdoubleArray fLongitude_,
+                                                  jint nfin) {
+    jdouble *fLatitude = env->GetDoubleArrayElements(fLatitude_, NULL);
+    jdouble *fLongitude = env->GetDoubleArrayElements(fLongitude_, NULL);
+
+    // TODO
+
+    env->ReleaseDoubleArrayElements(fLatitude_, fLatitude, 0);
+    env->ReleaseDoubleArrayElements(fLongitude_, fLongitude, 0);
+}
 
 extern "C"
 JNIEXPORT jdoubleArray JNICALL

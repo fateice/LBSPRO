@@ -45,6 +45,7 @@ import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button mButton;
 
+
 //    private EditText editTextk = (EditText)findViewById(R.id.editk);
 //    private EditText editTexts = (EditText)findViewById(R.id.edits);
 
@@ -85,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
 
     private  TextView mStateBar;
 
+    //芬兰用户经纬度
+    public double[] fLongitude = new double[6014];
+    public double[] fLatitude = new double[6014];
+    public int flag = 0;
 
     boolean siming = false;
 
@@ -146,6 +152,97 @@ public class MainActivity extends AppCompatActivity {
     public native double[] NNC(double mLongitude,double mLatitude, int k, double s);//最近邻
     public native double[] IC(double mLongitude,double mLatitude,int k,double s);//四叉树
     public native double[] Casper(double mLongitude,double mLatitude,int k,double s);//四叉树改进
+    public native double[] NNCTEST(double mLongitude,double mLatitude,int k,double s,double[] fLatitude,double[] fLongitude,int nfin);
+
+    public String getFromAssets(String fileName){
+        String result = "";
+        try {
+            InputStream in = getResources().getAssets().open(fileName);
+            //获取文件的字节数
+            int lenght = in.available();
+            //创建byte数组
+            byte[]  buffer = new byte[lenght];
+            //将文件中的数据读到byte数组中
+            in.read(buffer);
+            result = new String(buffer, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    //NNC验证
+    public void NNCT(View view)
+    {
+
+
+        //String state = "";
+        String datafin = "";
+        datafin = getFromAssets("data.txt");
+        String [] strArr = datafin.split("\n| ");
+
+        int n = 6014;
+        for (int i=0;i<n;i++)
+        {
+            fLatitude[i] = Double.parseDouble(strArr[2*i]);
+            fLongitude[i] = Double.parseDouble(strArr[2*i+1]);
+        }
+        //ss = NNCTEST(mLongitude,mLatitude,k,s,fLatitude,fLongitude,n);
+        //state = String.format("%f",datafin);
+        //state += "\n";
+
+        flag = 1;
+        LatLng latLng=new LatLng(fLatitude[0],fLongitude[0]);
+        MapStatusUpdate msu= MapStatusUpdateFactory.newLatLng(latLng);
+        mBaiduMap.setMapStatus(msu);
+
+        new TaskThread().start();
+
+//        BitmapDescriptor bitmapk = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
+//        for (int i=0;i<n;i++)
+//        {
+//            LatLng pointkmean = new LatLng(fLatitude[i],fLongitude[i]);
+//            OverlayOptions optionkmean = new MarkerOptions().position(pointkmean).icon(bitmapk);
+//            mBaiduMap.addOverlay(optionkmean);
+//        }
+
+        //mStateBar.setText(strArr[1]);
+    }
+//
+//    Handler handler = new Handler() {
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case 0:
+//                {
+//
+//                }
+//                break;
+//
+//                default:
+//                    break;
+//            }
+//        };
+//    };
+
+    class TaskThread extends Thread {
+        public void run() {
+//            try {
+            while(flag == 1) {
+                BitmapDescriptor bitmapk = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
+                for (int i = 0; i < 6014; i++) {
+                    LatLng pointkmean = new LatLng(fLatitude[i], fLongitude[i]);
+                    OverlayOptions optionkmean = new MarkerOptions().position(pointkmean).icon(bitmapk);
+                    mBaiduMap.addOverlay(optionkmean);
+                }
+            }
+//            }
+//            catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            handler.sendEmptyMessage(0);
+        };
+    };
+
 
     public void inputks(View view)
     {
@@ -270,6 +367,7 @@ public class MainActivity extends AppCompatActivity {
         //initView();
         //initListener();
         //initLocation();
+        flag = 0;
         mBaiduMap.clear();
     }
 
