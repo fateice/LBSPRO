@@ -75,6 +75,276 @@ void kMeans(vector<Vect> init)
 
 }
 
+extern "C"
+JNIEXPORT jdoubleArray JNICALL
+Java_com_example_kimi_lbspro_MainActivity_CasperTEST(JNIEnv *env, jobject instance,
+                                                     jdouble mLongitude, jdouble mLatitude, jint k,
+                                                     jdouble s, jdoubleArray fLatitude_,
+                                                     jdoubleArray fLongitude_) {
+    jdouble *fLatitude = env->GetDoubleArrayElements(fLatitude_, NULL);
+    jdouble *fLongitude = env->GetDoubleArrayElements(fLongitude_, NULL);
+
+    double minJ = 29.70;
+    double minK = 62.55;
+    double maxJ = 29.80;
+    double maxK = 62.65;
+
+    //上一次的结果
+    double minJLast = 0;
+    double minKLast = 0;
+    double maxJLast = 0;
+    double maxKLast = 0;
+
+
+    int find = 0;
+    int xsum = 0;
+
+    while(find == 0)
+    {
+        xsum = 0;
+        //比较
+        for (int i = 0; i < 10; ++i) {
+            if (fLongitude[i]>minJ && fLatitude[i]>minK && fLongitude[i]<maxJ && fLatitude[i]<maxK)
+            {
+                xsum++;
+            }
+        }
+        if(xsum==k || xsum==0)
+        {
+            break;
+        }
+        if(xsum < k)
+        {
+            //break;
+            //左下
+            if(minJ == minJLast && minK == minKLast) {
+
+                //J
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if (fLongitude[i] > minJ && fLatitude[i] > minK && fLongitude[i] < maxJLast && fLatitude[i] < maxK) {
+                        xsum++;
+                    }
+                }
+                if (xsum > k || xsum == k) {
+                    maxKLast = maxK;
+                    break;
+                }
+
+                //K
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if (fLongitude[i] > minJ && fLatitude[i] > minK && fLongitude[i] < maxJ && fLatitude[i] < maxKLast) {
+                        xsum++;
+                    }
+                }
+                if (xsum > k || xsum == k) {
+                    maxJLast = maxJ;
+                    break;
+                }
+
+            }
+                //右下
+            else if(maxJ == maxJLast && minK == minKLast)
+            {
+                //J
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if (fLongitude[i] > minJLast && fLatitude[i] > minK && fLongitude[i] < maxJLast && fLatitude[i] < maxK) {
+                        xsum++;
+                    }
+                }
+                if (xsum > k || xsum == k) {
+                    maxKLast = maxK;
+                    break;
+                }
+
+                //K
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if (fLongitude[i] > minJ && fLatitude[i] > minK && fLongitude[i] < maxJ && fLatitude[i] < maxKLast) {
+                        xsum++;
+                    }
+                }
+                if (xsum > k || xsum == k) {
+                    minJLast = minJ;
+                    break;
+                }
+
+
+
+            }
+                //右上
+            else if(maxJ == maxJLast && maxK == maxKLast)
+            {
+                //J
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if(fLongitude[i]>minJLast && fLatitude[i]>maxK && fLongitude[i]<maxJ && fLatitude[i]<maxK)
+                    {
+                        xsum++;
+                    }
+                }
+                if(xsum > k || xsum == k) {
+                    minKLast = minK;
+                    break;
+                }
+
+
+                //K
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if(fLongitude[i]>minJ && fLatitude[i]>minKLast && fLongitude[i]<maxJ && fLatitude[i]<maxK)
+                    {
+                        xsum++;
+                    }
+                }
+                if(xsum > k || xsum == k){
+                    minJLast = minJ;
+                    break;
+                }
+            }
+
+                //左上
+            else if(minJ == minJLast && maxK == maxKLast)
+            {
+                //J
+                xsum = 0;
+                for (int i = 0; i < 10; ++i) {
+                    if(fLongitude[i]>minJ && fLatitude[i]>minK && fLongitude[i]<maxJLast && fLatitude[i]<maxK)
+                    {
+                        xsum++;
+                    }
+                }
+                if(xsum>k||xsum==k)
+                {
+                    minKLast = minK;
+                    break;
+                }
+                //K
+                xsum=0;
+                for (int i = 0; i < 10; ++i) {
+                    if(fLongitude[i]>minJ && fLatitude[i]>maxKLast && fLongitude[i]<maxJ && fLatitude[i]<maxK)
+                    {
+                        xsum++;
+                    }
+                }
+                if(xsum>k||xsum==k){
+                    maxJLast = maxJ;
+                    break;
+                }
+
+            }
+//            else{
+//                break;
+//            }
+        }
+
+        //保存上一次的结果
+        minJLast = minJ;
+        minKLast = minK;
+        maxJLast = maxJ;
+        maxKLast = maxK;
+
+        //划分
+        if(mLongitude<(minJ+maxJ)/(double)2)
+        {
+            maxJ = (minJ + maxJ)/(double)2;
+        }
+        else
+        {
+            minJ = (minJ + maxJ)/(double)2;
+        }
+
+        if(mLatitude<(minK+maxK)/(double)2)
+        {
+            maxK = (minK + maxK)/(double)2;
+        }
+        else{
+            minK = (minK + maxK)/(double)2;
+        }
+
+    }
+
+
+    //伪装区域内的点
+    int inarenum = 0;
+    double inJ[UserNum];
+    double inK[UserNum];
+
+    int start = 0;
+    for (int i = 0; i < UserNum; i++)
+    {
+        if ((fLongitude[i] > minJLast || fLongitude[i] == minJLast) && (fLongitude[i] < maxJLast || fLongitude[i] == maxJLast) && (fLatitude[i] > minKLast || fLatitude[i] == minKLast) && (fLatitude[i] < maxKLast || fLatitude[i] == maxKLast))
+        {
+            inarenum++;
+            inJ[start] = fLongitude[i];
+            inK[start] = fLatitude[i];
+            start++;
+        }
+    }
+
+    vector<Vect>init;
+    for (int i = 0; i < inarenum; i++)
+    {
+        Vect t;
+        t.x = inJ[i];
+        t.y = inK[i];
+        init.push_back(t);
+    }
+
+    //kMeans(init);
+    Vect means[NUM];
+    vector<Vect> classes[NUM];
+    double newE, oldE = -1;
+    srand(time(NULL));
+    for (int i = 0; i < NUM; i++)
+    {
+        int c = rand() % init.size();
+        classes[i].push_back(init[c]);
+        means[i] = getMeansC(classes[i]);  //计算当前每个簇的中心点
+    }
+    newE = getE(classes, means);  //计算当前准则函数值
+    for (int i = 0; i < NUM; i++)
+        classes[i].clear();
+    vector<Vect> ans[NUM];
+    while (fabs(newE - oldE) >= 1)
+    {
+        for (int i = 0; i < init.size(); i++)
+        {
+            int toC = searchMinC(init[i], means);
+            classes[toC].push_back(init[i]);
+        }
+        for (int i = 0; i < NUM; i++)
+            ans[i] = classes[i];
+        for (int i = 0; i < NUM; i++)
+            means[i] = getMeansC(classes[i]);
+        oldE = newE;
+        newE = getE(classes, means);
+        for (int i = 0; i < NUM; i++)
+            classes[i].clear();
+    }
+
+    jdoubleArray result = env->NewDoubleArray(7);
+    double carr[7]={};
+    carr[0]=minJLast;
+    carr[1]=minKLast;
+    carr[2]=maxJLast;
+    carr[3]=maxKLast;
+    carr[4]=means[0].x;
+    carr[5]=means[0].y;
+
+    //距离
+    carr[6] = sqrt(pow(carr[4] - mLongitude,2) + pow(carr[5] - mLatitude,2));
+
+    env->SetDoubleArrayRegion(result,0,7,carr);
+
+    env->ReleaseDoubleArrayElements(fLatitude_, fLatitude, 0);
+    env->ReleaseDoubleArrayElements(fLongitude_, fLongitude, 0);
+    return result;
+}
+
+extern "C"
 JNIEXPORT jdoubleArray JNICALL
 Java_com_example_kimi_lbspro_MainActivity_ICTEST(JNIEnv *env, jobject instance, jdouble mLongitude,
                                                  jdouble mLatitude, jint k, jdouble s,
@@ -83,7 +353,6 @@ Java_com_example_kimi_lbspro_MainActivity_ICTEST(JNIEnv *env, jobject instance, 
     jdouble *fLatitude = env->GetDoubleArrayElements(fLatitude_, NULL);
     jdouble *fLongitude = env->GetDoubleArrayElements(fLongitude_, NULL);
 
-    // TODO
     double minJ = 29.70;
     double minK = 62.55;
     double maxJ = 29.80;
@@ -196,8 +465,8 @@ Java_com_example_kimi_lbspro_MainActivity_ICTEST(JNIEnv *env, jobject instance, 
     }
 
 
-    jdoubleArray result = env->NewDoubleArray(6);
-    double carr[6]={};
+    jdoubleArray result = env->NewDoubleArray(7);
+    double carr[7]={};
     carr[0]=minJLast;
     carr[1]=minKLast;
     carr[2]=maxJLast;
@@ -205,7 +474,10 @@ Java_com_example_kimi_lbspro_MainActivity_ICTEST(JNIEnv *env, jobject instance, 
     carr[4]=means[0].x;
     carr[5]=means[0].y;
 
-    env->SetDoubleArrayRegion(result,0,6,carr);  //经度
+    //距离
+    carr[6] = sqrt(pow(carr[4] - mLongitude,2) + pow(carr[5] - mLatitude,2));
+
+    env->SetDoubleArrayRegion(result,0,7,carr);
 
     env->ReleaseDoubleArrayElements(fLatitude_, fLatitude, 0);
     env->ReleaseDoubleArrayElements(fLongitude_, fLongitude, 0);

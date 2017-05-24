@@ -26,105 +26,129 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="60dp" />
 
-    <TextView
-        android:id="@+id/mStateBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:text="@string/point" />
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/mStateBar"
-        android:text="停止"
-        android:onClick="simClose"/>
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/mStateBar"
-        android:layout_toStartOf="@+id/button"
-        android:text="模拟"
-        android:onClick="simGPS"/>
+        android:layout_alignParentRight="true">
+        <TextView
+            android:id="@+id/mStateBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="@string/point" />
 
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/button"
-        android:layout_toEndOf="@+id/button2"
-        android:text="Grid"
-        android:onClick="Grid"/>
+        <Button
+            android:id="@+id/button"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/mStateBar"
+            android:onClick="simClose"
+            android:text="停止" />
 
-    <Button
-        android:id="@+id/button4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/button3"
-        android:layout_below="@+id/button3"
-        android:text="NNC"
-        android:onClick="NNCb"/>
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/mStateBar"
+            android:layout_toStartOf="@+id/button"
+            android:text="模拟"
+            android:onClick="simGPS" />
 
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/button4"
-        android:layout_below="@+id/button4"
-        android:text="IC"
-        android:onClick="ICb"/>
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/button"
+            android:layout_toEndOf="@+id/button2"
+            android:text="Grid"
+            android:onClick="Grid"/>
 
-    <EditText
-        android:id="@+id/editk"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/button5"
-        android:inputType="number"
-        android:ems="10"
-        android:text="3"
-        android:layout_alignStart="@+id/button5" />
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:text="NNC"
+            android:onClick="NNCb"
+            android:layout_below="@+id/button2"
+            android:layout_toStartOf="@+id/button3" />
 
-    <EditText
-        android:id="@+id/edits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/editk"
-        android:inputType="number"
-        android:ems="10"
-        android:text="10000"
-        android:layout_alignStart="@+id/editk" />
+        <Button
+            android:id="@+id/button5"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:text="IC"
+            android:onClick="ICb"
+            android:layout_below="@+id/button3"
+            android:layout_alignParentEnd="true" />
 
-    <Button
-        android:id="@+id/button6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/edits"
-        android:layout_below="@+id/edits"
-        android:text="确认"
-        android:onClick="inputks"/>
+        <EditText
+            android:id="@+id/editk"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:ems="10"
+            android:text="3"
+            android:layout_below="@+id/button5"
+            android:layout_alignStart="@+id/button7"
+            android:layout_toStartOf="@+id/button5" />
 
-    <Button
-        android:id="@+id/button7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@+id/button6"
-        android:text="Casper"
-            android:onClick="CCasper"/>
+        <EditText
+            android:id="@+id/edits"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:ems="10"
+            android:text="10000"
+            android:layout_below="@+id/button5"
+            android:layout_toEndOf="@+id/editk" />
 
-    <Button
-        android:id="@+id/button8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/button7"
-        android:layout_below="@+id/button7"
-        android:text="NNCTEST"
-        android:onClick="NNCT"/>
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:text="确认"
+            android:onClick="inputks"
+            android:layout_below="@+id/edits"
+            android:layout_alignParentEnd="true" />
+
+        <Button
+            android:id="@+id/button7"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:text="Casper"
+            android:onClick="CCasper"
+            android:layout_below="@+id/button4"
+            android:layout_toStartOf="@+id/button5" />
+
+        <Button
+            android:id="@+id/button8"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:text="NNCTEST"
+            android:onClick="NNCT"
+            android:layout_below="@+id/editk"
+            android:layout_alignStart="@+id/button7" />
+
+        <Button
+            android:id="@+id/button9"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_alignStart="@+id/button8"
+            android:layout_below="@+id/button6"
+            android:text="ICTEST"
+            android:onClick="ICT"/>
+
+        <Button
+            android:id="@+id/button10"
+            android:layout_width="70dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/button6"
+            android:layout_toEndOf="@+id/button9"
+            android:text="CasTEST"
+            android:onClick="CasperT"/>
+    </RelativeLayout>
 
 </RelativeLayout>
