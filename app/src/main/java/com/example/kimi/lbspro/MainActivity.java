@@ -49,7 +49,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "SetLocation";
     private Thread thread;
@@ -152,7 +151,8 @@ public class MainActivity extends AppCompatActivity {
     public native double[] NNC(double mLongitude,double mLatitude, int k, double s);//最近邻
     public native double[] IC(double mLongitude,double mLatitude,int k,double s);//四叉树
     public native double[] Casper(double mLongitude,double mLatitude,int k,double s);//四叉树改进
-    public native double[] NNCTEST(double mLongitude,double mLatitude,int k,double s,double[] fLatitude,double[] fLongitude,int nfin);
+    public native double[] NNCTEST(double mLongitude,double mLatitude,int k,double s,double[] fLatitude,double[] fLongitude);
+    public native double[] ICTEST(double mLongitude,double mLatitude,int k,double s,double[] fLatitude,double[] fLongitude);
 
     public String getFromAssets(String fileName){
         String result = "";
@@ -169,6 +169,36 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         return result;
+    }
+
+    //IC验证
+    public void ICT(View view)
+    {
+        String datafin = "";
+        datafin = getFromAssets("data.txt");
+        String [] strArr = datafin.split("\n| ");
+
+        int n = 6014;
+        for (int i=0;i<n;i++)
+        {
+            fLatitude[i] = Double.parseDouble(strArr[2*i]);
+            fLongitude[i] = Double.parseDouble(strArr[2*i+1]);
+        }
+        //ss = NNCTEST(mLongitude,mLatitude,k,s,fLatitude,fLongitude,n);
+        //state = String.format("%f",datafin);
+        //state += "\n";
+
+        flag = 1;
+
+        LatLng latLng=new LatLng(fLatitude[106],fLongitude[106]);
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
+        OverlayOptions option = new MarkerOptions().position(latLng).icon(bitmap);
+        mBaiduMap.addOverlay(option);
+
+        MapStatusUpdate msu= MapStatusUpdateFactory.newLatLng(latLng);
+        mBaiduMap.setMapStatus(msu);
+
+        ss = ICTEST(fLongitude[106],fLatitude[106],100,s,fLatitude,fLongitude);
     }
 
     //NNC验证
@@ -192,23 +222,47 @@ public class MainActivity extends AppCompatActivity {
         //state += "\n";
 
         flag = 1;
-        LatLng latLng=new LatLng(fLatitude[0],fLongitude[0]);
+
+        LatLng latLng=new LatLng(fLatitude[106],fLongitude[106]);
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
+        OverlayOptions option = new MarkerOptions().position(latLng).icon(bitmap);
+        mBaiduMap.addOverlay(option);
+
         MapStatusUpdate msu= MapStatusUpdateFactory.newLatLng(latLng);
         mBaiduMap.setMapStatus(msu);
 
-        new TaskThread().start();
+        ss = NNCTEST(fLongitude[106],fLatitude[106],100,s,fLatitude,fLongitude);
 
-//        BitmapDescriptor bitmapk = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
-//        for (int i=0;i<n;i++)
+        //绘所有点
+        //new TaskThread().start();
+
+//        String state = "";
+
+//        state = String.format("%f,%f",fLatitude[106],fLongitude[106]);
+//        state += "\n";
+
+//        for (int i=0;i<100;i++)
 //        {
-//            LatLng pointkmean = new LatLng(fLatitude[i],fLongitude[i]);
-//            OverlayOptions optionkmean = new MarkerOptions().position(pointkmean).icon(bitmapk);
-//            mBaiduMap.addOverlay(optionkmean);
+//            state += String.format("%f,%f",ss[i+100],ss[i]);
+//            state += "\n";
 //        }
+//        mStateBar.setText(state);
 
-        //mStateBar.setText(strArr[1]);
+        BitmapDescriptor bitmapk = BitmapDescriptorFactory.fromResource(R.drawable.location_kmean);
+        for (int i=0;i<100;i++)
+        {
+            LatLng pointkmean = new LatLng(ss[i+100],ss[i]);
+            OverlayOptions optionkmean = new MarkerOptions().position(pointkmean).icon(bitmapk);
+            mBaiduMap.addOverlay(optionkmean);
+        }
+
+
+        String state = "";
+        state = String.format("平均距离%f,方差%f",ss[200],ss[201]);
+        state += "\n";
+        mStateBar.setText(state);
     }
-//
+
 //    Handler handler = new Handler() {
 //        public void handleMessage(Message msg) {
 //            switch (msg.what) {
@@ -228,12 +282,15 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
 //            try {
             while(flag == 1) {
-                BitmapDescriptor bitmapk = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
-                for (int i = 0; i < 6014; i++) {
-                    LatLng pointkmean = new LatLng(fLatitude[i], fLongitude[i]);
+                //ss = NNCTEST(fLongitude[104],fLatitude[104],100,s,fLatitude,fLongitude);
+                BitmapDescriptor bitmapk = BitmapDescriptorFactory.fromResource(R.drawable.location_kmean);
+                for (int i = 0; i < 100; i++) {
+                    //LatLng pointkmean = new LatLng(ss[i+100], ss[i]);
+                    LatLng pointkmean = new LatLng(mLatitude, mLongitude);
                     OverlayOptions optionkmean = new MarkerOptions().position(pointkmean).icon(bitmapk);
                     mBaiduMap.addOverlay(optionkmean);
                 }
+
             }
 //            }
 //            catch (InterruptedException e) {

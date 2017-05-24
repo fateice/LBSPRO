@@ -8,7 +8,7 @@
 
 
 using namespace std;
-
+const int UserNum = 6014;//用户数量
 const int NUM = 1; //定义划分簇的数目
 
 //数据向量表示
@@ -75,19 +75,341 @@ void kMeans(vector<Vect> init)
 
 }
 
-
 JNIEXPORT jdoubleArray JNICALL
-Java_com_example_kimi_lbspro_MainActivity_NNCTEST(JNIEnv *env, jobject instance, jdouble mLongitude,
-                                                  jdouble mLatitude, jint k, jdouble s,
-                                                  jdoubleArray fLatitude_, jdoubleArray fLongitude_,
-                                                  jint nfin) {
+Java_com_example_kimi_lbspro_MainActivity_ICTEST(JNIEnv *env, jobject instance, jdouble mLongitude,
+                                                 jdouble mLatitude, jint k, jdouble s,
+                                                 jdoubleArray fLatitude_,
+                                                 jdoubleArray fLongitude_) {
     jdouble *fLatitude = env->GetDoubleArrayElements(fLatitude_, NULL);
     jdouble *fLongitude = env->GetDoubleArrayElements(fLongitude_, NULL);
 
     // TODO
+    double minJ = 29.70;
+    double minK = 62.55;
+    double maxJ = 29.80;
+    double maxK = 62.65;
+
+    double minJLast = 0;
+    double minKLast = 0;
+    double maxJLast = 0;
+    double maxKLast = 0;
+
+    int find = 0;
+    int xsum = 0;
+    while (find == 0)
+    {
+        xsum = 0;
+        //比较
+        for (int i = 0; i < UserNum; ++i) {
+            if (fLongitude[i] > minJ && fLatitude[i] > minK && fLongitude[i] < maxJ && fLatitude[i] < maxK)
+            {
+                xsum++;
+            }
+        }
+        if (xsum < k)
+        {
+            break;
+        }
+
+
+        //保存上一次的结果
+        minJLast = minJ;
+        minKLast = minK;
+        maxJLast = maxJ;
+        maxKLast = maxK;
+
+        //划分
+        if (mLongitude < (minJ + maxJ) / (double)2)
+        {
+            maxJ = (minJ + maxJ) / (double)2;
+        }
+        else
+        {
+            minJ = (minJ + maxJ) / (double)2;
+        }
+
+        if (mLatitude < (minK + maxK) / (double)2)
+        {
+            maxK = (minK + maxK) / (double)2;
+        }
+        else {
+            minK = (minK + maxK) / (double)2;
+        }
+    }
+
+    //伪装区域内的点
+    int inarenum = 0;
+    double inJ[UserNum];
+    double inK[UserNum];
+
+    int start = 0;
+    for (int i = 0; i < UserNum; i++)
+    {
+        if ((fLongitude[i] > minJLast || fLongitude[i] == minJLast) && (fLongitude[i] < maxJLast || fLongitude[i] == maxJLast) && (fLatitude[i] > minKLast || fLatitude[i] == minKLast) && (fLatitude[i] < maxKLast || fLatitude[i] == maxKLast))
+        {
+            inarenum++;
+            inJ[start] = fLongitude[i];
+            inK[start] = fLatitude[i];
+            start++;
+        }
+    }
+
+    vector<Vect>init;
+    for (int i = 0; i < inarenum; i++)
+    {
+        Vect t;
+        t.x = inJ[i];
+        t.y = inK[i];
+        init.push_back(t);
+    }
+
+    //kMeans(init);
+    Vect means[NUM];
+    vector<Vect> classes[NUM];
+    double newE, oldE = -1;
+    srand(time(NULL));
+    for (int i = 0; i < NUM; i++)
+    {
+        int c = rand() % init.size();
+        classes[i].push_back(init[c]);
+        means[i] = getMeansC(classes[i]);  //计算当前每个簇的中心点
+    }
+    newE = getE(classes, means);  //计算当前准则函数值
+    for (int i = 0; i < NUM; i++)
+        classes[i].clear();
+    vector<Vect> ans[NUM];
+    while (fabs(newE - oldE) >= 1)
+    {
+        for (int i = 0; i < init.size(); i++)
+        {
+            int toC = searchMinC(init[i], means);
+            classes[toC].push_back(init[i]);
+        }
+        for (int i = 0; i < NUM; i++)
+            ans[i] = classes[i];
+        for (int i = 0; i < NUM; i++)
+            means[i] = getMeansC(classes[i]);
+        oldE = newE;
+        newE = getE(classes, means);
+        for (int i = 0; i < NUM; i++)
+            classes[i].clear();
+    }
+
+
+    jdoubleArray result = env->NewDoubleArray(6);
+    double carr[6]={};
+    carr[0]=minJLast;
+    carr[1]=minKLast;
+    carr[2]=maxJLast;
+    carr[3]=maxKLast;
+    carr[4]=means[0].x;
+    carr[5]=means[0].y;
+
+    env->SetDoubleArrayRegion(result,0,6,carr);  //经度
 
     env->ReleaseDoubleArrayElements(fLatitude_, fLatitude, 0);
     env->ReleaseDoubleArrayElements(fLongitude_, fLongitude, 0);
+    return result;
+}
+
+extern "C"
+JNIEXPORT jdoubleArray JNICALL
+Java_com_example_kimi_lbspro_MainActivity_NNCTEST(JNIEnv *env, jobject instance, jdouble mLongitude,
+                                                  jdouble mLatitude, jint k, jdouble s,
+                                                  jdoubleArray fLatitude_, jdoubleArray fLongitude_) {
+    jdouble *fLatitude = env->GetDoubleArrayElements(fLatitude_, NULL);
+    jdouble *fLongitude = env->GetDoubleArrayElements(fLongitude_, NULL);
+
+    //排序后距离
+    double len[UserNum] = {};
+    //排序前距离
+    double num[UserNum] = {};
+    //第二次的随机选择
+    int randk[100] = {};
+
+    //第一次候选
+    int choose1[UserNum] = {};
+    int choose2[UserNum] = {};
+    int ch2;
+
+    srand((unsigned)time(NULL));
+    for (int i = 0; i < 100; i++)
+    {
+        randk[i] = (rand() % (k - 0)) + 0;
+    }
+
+    //100次的结果
+    double lastj[100] = {};
+    double lastk[100] = {};
+
+    //100次
+    for (int dotime = 0; dotime < 100; dotime++)
+    {
+        //初始化
+        for (int i = 0; i < UserNum; i++)
+        {
+            len[i] = 0;
+            num[i] = 0;
+            choose1[i] = 0;
+            choose2[2] = 0;
+        }
+
+        for (int i = 0; i < UserNum; i++)
+        {
+            //距离
+            len[i] = pow(fLongitude[i] - mLongitude, 2) + pow(fLatitude[i] - mLatitude, 2);
+            num[i] = len[i];
+        }
+
+        sort(len, len + UserNum);
+
+        for (int i = 0; i < k; i++)
+        {
+            for (int j = 0; j < UserNum; j++)
+            {
+                if (len[i] == num[j])
+                {
+                    choose1[i] = j;
+                }
+            }
+        }
+
+        ch2 = randk[dotime];
+
+        for (int i = 0; i < UserNum; i++)
+        {
+            //距离
+            len[i] = pow(fLongitude[i] - fLongitude[choose1[ch2]], 2) + pow(fLatitude[i] - fLatitude[choose1[ch2]], 2);
+            num[i] = len[i];
+        }
+        sort(len, len + UserNum);
+        for (int i = 0; i < k; i++)
+        {
+            for (int j = 0; j < UserNum; j++)
+            {
+                if (len[i] == num[j])
+                {
+                    choose2[i] = j;
+                }
+            }
+        }
+
+        choose2[k] = 0;
+
+        double maxJ = 0;
+        double minJ = 10000;
+        double maxK = 0;
+        double minK = 10000;
+        for (int i = 0; i < k + 1; i++)
+        {
+            if (fLongitude[choose2[i]] < minJ)
+            {
+                minJ = fLongitude[choose2[i]];
+            }
+            if (fLongitude[choose2[i]] > maxJ)
+            {
+                maxJ = fLongitude[choose2[i]];
+            }
+            if (fLatitude[choose2[i]] < minK)
+            {
+                minK = fLatitude[choose2[i]];
+            }
+            if (fLatitude[choose2[i]] > maxK)
+            {
+                maxK = fLatitude[choose2[i]];
+            }
+        }
+
+        //伪装区域内的点
+        int inarenum = 0;
+        double inJ[UserNum];
+        double inK[UserNum];
+
+        int start = 0;
+        for (int i = 0; i < UserNum; i++)
+        {
+            if ((fLongitude[i] > minJ || fLongitude[i] == minJ) && (fLongitude[i] < maxJ || fLongitude[i] == maxJ) && (fLatitude[i] > minK || fLatitude[i] == minK) && (fLatitude[i] < maxK || fLatitude[i] == maxK))
+            {
+                inarenum++;
+                inJ[start] = fLongitude[i];
+                inK[start] = fLatitude[i];
+                start++;
+            }
+        }
+
+        vector<Vect>init;
+        for (int i = 0; i < inarenum; i++)
+        {
+            Vect t;
+            t.x = inJ[i];
+            t.y = inK[i];
+            init.push_back(t);
+        }
+
+        //kMeans(init);
+        Vect means[NUM];
+        vector<Vect> classes[NUM];
+        double newE, oldE = -1;
+        srand(time(NULL));
+        for (int i = 0; i<NUM; i++)
+        {
+            int c = rand() % init.size();
+            classes[i].push_back(init[c]);
+            means[i] = getMeansC(classes[i]);  //计算当前每个簇的中心点
+        }
+        newE = getE(classes, means);  //计算当前准则函数值
+        for (int i = 0; i<NUM; i++)
+            classes[i].clear();
+        vector<Vect> ans[NUM];
+        while (fabs(newE - oldE) >= 1)
+        {
+            for (int i = 0; i<init.size(); i++)
+            {
+                int toC = searchMinC(init[i], means);
+                classes[toC].push_back(init[i]);
+            }
+            for (int i = 0; i<NUM; i++)
+                ans[i] = classes[i];
+            for (int i = 0; i<NUM; i++)
+                means[i] = getMeansC(classes[i]);
+            oldE = newE;
+            newE = getE(classes, means);
+            for (int i = 0; i<NUM; i++)
+                classes[i].clear();
+        }
+        //end kmean
+
+        lastj[dotime] = means[0].x;
+        lastk[dotime] = means[0].y;
+    }
+
+    //距离真实位置的平均距离
+    double aves = 0;
+    for (int i = 0; i < 100; ++i) {
+        aves += sqrt(pow(lastj[i] - mLongitude, 2) + pow(lastk[i] - mLatitude, 2));
+    }
+    aves = aves / 100;
+
+    // 方差
+    double ex = 0;
+    for (int i = 0; i < 100; i++)
+    {
+        ex += pow(sqrt(pow(lastj[i] - mLongitude, 2) + pow(lastk[i] - mLatitude, 2)) - aves, 2);
+    }
+    ex = ex / 100;
+
+    jdoubleArray result = env->NewDoubleArray(202);
+    double carr[2]={};
+    carr[0]=aves;
+    carr[1]=ex;
+
+    env->SetDoubleArrayRegion(result,0,100,lastj);  //经度
+    env->SetDoubleArrayRegion(result,100,100,lastk);  //纬度
+    env->SetDoubleArrayRegion(result,200,2,carr);
+
+    env->ReleaseDoubleArrayElements(fLatitude_, fLatitude, 0);
+    env->ReleaseDoubleArrayElements(fLongitude_, fLongitude, 0);
+    return result;
 }
 
 extern "C"
