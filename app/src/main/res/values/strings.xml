@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">LBSPRO</string>
     <string name="point">长按地图以获取经纬度</string>
+    <string name="infor">LBSPRO，即Location Based Services Protection.这是一个对相关位置保护算法进行实现，分析，研究的程序。
+        对当前位置的算法实现采取了随机生成用户的方式。算法验证处采用了东芬兰大学提供的约恩苏用户位置数据。\
+        因为百度地图的隐私加密机制，导致最终显示出现整体偏移的情况。</string>
 </resources>

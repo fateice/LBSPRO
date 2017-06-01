@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
     private double mLongitude;
 
     //模拟经纬度
-    private double mmLatitude = 40.052462;
-    private double mmLongitude = 116.29064;
+    private double mmLatitude = 45.750046;
+    private double mmLongitude = 126.637699;
     private float mCurrentX;
 
     //计算后的经纬度
@@ -660,8 +660,11 @@ public class MainActivity extends AppCompatActivity {
         Location loc = new Location(mMockProviderName);
         loc.setAccuracy(Criteria.ACCURACY_FINE);
         loc.setTime(System.currentTimeMillis());
-        mmLatitude = currentPt.latitude;
-        mmLongitude = currentPt.longitude;
+        if(currentPt != null)
+        {
+            mmLatitude = currentPt.latitude;
+            mmLongitude = currentPt.longitude;
+        }
         loc.setLatitude(mmLatitude);
         loc.setLongitude(mmLongitude);
         loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
