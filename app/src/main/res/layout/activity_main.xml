@@ -15,6 +15,7 @@
         android:id="@+id/bmapView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_marginBottom="90dp"
         android:clickable="true" />
 
     <ImageButton
@@ -24,9 +25,7 @@
         android:background="@drawable/location"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="60dp" />
-
-
+        android:layout_marginBottom="110dp" />
 
     <RelativeLayout
         android:layout_width="140dp"
@@ -39,116 +38,125 @@
             android:layout_alignParentEnd="true"
             android:text="@string/point" />
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@+id/mStateBar"
-            android:onClick="simClose"
-            android:text="停止" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:layout_alignParentBottom="true">
 
         <Button
             android:id="@+id/button2"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="40dp"
-            android:layout_below="@+id/mStateBar"
-            android:layout_toStartOf="@+id/button"
             android:text="模拟"
             android:onClick="simGPS" />
+        <Button
+            android:id="@+id/button"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_below="@+id/button2"
+            android:onClick="simClose"
+            android:text="清除" />
 
         <Button
             android:id="@+id/button3"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="40dp"
-            android:layout_below="@+id/button"
-            android:layout_toEndOf="@+id/button2"
             android:text="Grid"
-            android:onClick="Grid"/>
+            android:onClick="Grid"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/button2" />
 
         <Button
             android:id="@+id/button4"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:layout_height="40dp"
             android:text="NNC"
             android:onClick="NNCb"
-            android:layout_below="@+id/button2"
-            android:layout_toStartOf="@+id/button3" />
+            android:layout_toEndOf="@id/button"
+            android:layout_below="@id/button3"/>
 
         <Button
             android:id="@+id/button5"
             android:layout_width="70dp"
             android:layout_height="40dp"
-            android:text="IC"
+            android:text="四叉树"
+            android:textSize="12sp"
             android:onClick="ICb"
-            android:layout_below="@+id/button3"
-            android:layout_alignParentEnd="true" />
-
-        <EditText
-            android:id="@+id/editk"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:inputType="number"
-            android:ems="10"
-            android:text="3"
-            android:layout_below="@+id/button5"
-            android:layout_alignStart="@+id/button7"
-            android:layout_toStartOf="@+id/button5" />
-
-        <EditText
-            android:id="@+id/edits"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:inputType="number"
-            android:ems="10"
-            android:text="10000"
-            android:layout_below="@+id/button5"
-            android:layout_toEndOf="@+id/editk" />
-
-        <Button
-            android:id="@+id/button6"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:text="确认"
-            android:onClick="inputks"
-            android:layout_below="@+id/edits"
-            android:layout_alignParentEnd="true" />
+            android:layout_toEndOf="@id/button3" />
 
         <Button
             android:id="@+id/button7"
             android:layout_width="70dp"
             android:layout_height="40dp"
             android:text="Casper"
+            android:textSize="12sp"
             android:onClick="CCasper"
-            android:layout_below="@+id/button4"
-            android:layout_toStartOf="@+id/button5" />
+            android:layout_below="@+id/button5"
+            android:layout_toEndOf="@+id/button4" />
+
+
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:text="确认"
+            android:onClick="inputks"
+            android:layout_alignParentEnd="true" />
+
+
+        <EditText
+            android:id="@+id/editk"
+            android:layout_width="55dp"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:textSize="12sp"
+            android:ems="10"
+            android:text="3"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/button6" />
+
+
+        <EditText
+            android:id="@+id/edits"
+            android:layout_width="55dp"
+            android:layout_height="40dp"
+            android:inputType="number"
+            android:ems="10"
+            android:text="10000"
+            android:textSize="12sp"
+            android:layout_toStartOf="@id/button6"
+            android:layout_below="@+id/editk"/>
 
         <Button
             android:id="@+id/button8"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:textSize="8sp"
             android:text="NNCTEST"
             android:onClick="NNCT"
-            android:layout_below="@+id/editk"
-            android:layout_alignStart="@+id/button7" />
+            android:layout_toStartOf="@+id/editk" />
 
         <Button
             android:id="@+id/button9"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:layout_alignStart="@+id/button8"
-            android:layout_below="@+id/button6"
-            android:text="ICTEST"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/button8"
+            android:layout_toStartOf="@+id/editk"
+            android:text="四叉树T"
+            android:textSize="8sp"
             android:onClick="ICT"/>
 
         <Button
             android:id="@+id/button10"
-            android:layout_width="70dp"
-            android:layout_height="40dp"
-            android:layout_below="@+id/button6"
-            android:layout_toEndOf="@+id/button9"
-            android:text="CasTEST"
+            android:layout_width="60dp"
+            android:layout_height="30dp"
+            android:layout_below="@+id/button9"
+            android:layout_toStartOf="@id/edits"
+            android:text="Caspert"
+            android:textSize="8sp"
             android:onClick="CasperT"/>
     </RelativeLayout>
-
 </RelativeLayout>

@@ -165,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
             byte[]  buffer = new byte[lenght];
             //将文件中的数据读到byte数组中
             in.read(buffer);
+            //以UTF-8格式保存
             result = new String(buffer, "UTF-8");
         } catch (Exception e) {
             e.printStackTrace();
@@ -293,6 +294,7 @@ public class MainActivity extends AppCompatActivity {
         flag = 1;
 
         LatLng latLng=new LatLng(fLatitude[106],fLongitude[106]);
+
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
         OverlayOptions option = new MarkerOptions().position(latLng).icon(bitmap);
         mBaiduMap.addOverlay(option);
@@ -300,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
         MapStatusUpdate msu= MapStatusUpdateFactory.newLatLng(latLng);
         mBaiduMap.setMapStatus(msu);
 
-        ss = NNCTEST(fLongitude[106],fLatitude[106],100,s,fLatitude,fLongitude);
+        ss = NNCTEST(fLongitude[106],fLatitude[106],k,s,fLatitude,fLongitude);
 
 
 
@@ -448,10 +450,10 @@ public class MainActivity extends AppCompatActivity {
         OverlayOptions poly = new PolygonOptions().points(pts).stroke(new Stroke(4,0xAA0066CC)).fillColor(0xAAFFCCFF);
         mBaiduMap.addOverlay(poly);
 
-        BitmapDescriptor bitmapk = BitmapDescriptorFactory.fromResource(R.drawable.location_kmean);
-        LatLng pointkmean = new LatLng(ss[25],ss[24]);
-        OverlayOptions optionkmean = new MarkerOptions().position(pointkmean).icon(bitmapk);
-        mBaiduMap.addOverlay(optionkmean);
+//        BitmapDescriptor bitmapk = BitmapDescriptorFactory.fromResource(R.drawable.location_kmean);
+//        LatLng pointkmean = new LatLng(ss[25],ss[24]);
+//        OverlayOptions optionkmean = new MarkerOptions().position(pointkmean).icon(bitmapk);
+//        mBaiduMap.addOverlay(optionkmean);
 
         BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.location_m);
         for(int i=0;i<10;i++)
@@ -665,6 +667,18 @@ public class MainActivity extends AppCompatActivity {
             mmLatitude = currentPt.latitude;
             mmLongitude = currentPt.longitude;
         }
+
+//        CoordinateConverter converter = new CoordinateConverter();
+//        converter.from(CoordinateConverter.CoordType.COMMON);
+//        LatLng ha1 = new LatLng(mmLatitude,mmLongitude);
+//        converter.coord(ha1);
+//        LatLng ha2 = converter.convert();
+//        mmLatitude = ha2.latitude;
+//        mmLongitude = ha2.longitude;
+//
+//
+//        Log.v("tagg",ha1.toString()+ha2.toString());
+
         loc.setLatitude(mmLatitude);
         loc.setLongitude(mmLongitude);
         loc.setElapsedRealtimeNanos(SystemClock.elapsedRealtimeNanos());
